@@ -68,16 +68,16 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'message',
+    id: 'question',
     numeric: false,
     disablePadding: true,
-    label: 'Message',
+    label: 'Question',
   },
   {
-    id: 'spamnospam',
+    id: 'answer',
     numeric: true,
     disablePadding: false,
-    label: 'Is it Spam',
+    label: 'Answer',
   },
   {
     id: 'insertdatetime',
@@ -311,7 +311,7 @@ export default function EnhancedTable() {
             />
             <TableBody>
               {visibleRows.map((row, index) => {
-                const isItemSelected = isSelected(row.name);
+                const isItemSelected = isSelected(row.question);
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
@@ -321,7 +321,7 @@ export default function EnhancedTable() {
                     role="checkbox"
                     aria-checked={isItemSelected}
                     tabIndex={-1}
-                    key={row.name}
+                    key={row.question}
                     selected={isItemSelected}
                     sx={{ cursor: 'pointer' }}
                   >
@@ -340,9 +340,9 @@ export default function EnhancedTable() {
                       scope="row"
                       padding="none"
                     >
-                      {row.message}
+                      {row.question}
                     </TableCell>
-                    <TableCell align="right">{row.spamnospam}</TableCell>
+                    <TableCell align="right">{row.answer}</TableCell>
                     <TableCell align="right">{row.insertdatetime}</TableCell>
                     <TableCell align="right">{row.updatedatetime}</TableCell>
                   </TableRow>

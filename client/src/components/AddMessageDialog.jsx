@@ -9,12 +9,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import AddCommentIcon from '@mui/icons-material/AddComment';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Box } from '@mui/material';
+import { green } from '@mui/material/colors';
 import axios from 'axios';
 import moment from 'moment';
 
 export default function AddMessageDialog({callback}) {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false)
 
   const handleChange = async (e) => {
     setMessage(e.target.value);
@@ -22,11 +26,17 @@ export default function AddMessageDialog({callback}) {
 
   const handlePublish = async (e) => {
     const data = {
-      message,
+      question: message,
       insertDate: moment().format("MM/DD/yyyy")
     }
-    await axios.post("/microapi2", data);
-    await callback()
+    setLoading(true);
+    try {
+      await axios.post("/microapi2", data);
+      await callback();
+    } catch(err) {
+      alert(err);
+    }
+    setLoading(false)
   }
 
   const handleClickOpen = () => {
@@ -35,6 +45,7 @@ export default function AddMessageDialog({callback}) {
 
   const handleClose = () => {
     setOpen(false);
+    setMessage('');
   };
 
   return (
@@ -48,16 +59,16 @@ export default function AddMessageDialog({callback}) {
        Add A Message To Queue
       </Button> */}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Publish Message</DialogTitle>
+        <DialogTitle>Questions About Black Knight?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Submit any message to predict if the message could be a spam or not.
+            Ask a question about Black Knight and the answer will amaze you.
           </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Add Message"
+            label="Ask A Question"
             type="text"
             fullWidth
             variant="standard"
@@ -66,8 +77,38 @@ export default function AddMessageDialog({callback}) {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handlePublish}>Publish</Button>
+        <Box sx={{ m: 1, position: 'relative' }}>
+            <Button variant="contained" disabled={loading} onClick={handleClose} style={{marginRight: "10px"}}>Cancel</Button>
+            {loading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: green[500],
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
+                }}
+              />
+          )}
+          </Box>
+          <Box sx={{ m: 1, position: 'relative' }}>
+            <Button variant="contained" onClick={handlePublish} disabled={loading}>Publish</Button>
+            {loading && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  color: green[500],
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px',
+                }}
+              />
+          )}
+          </Box>
         </DialogActions>
       </Dialog>
     </div>
